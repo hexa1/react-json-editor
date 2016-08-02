@@ -32,6 +32,7 @@
     "import/no-unresolved": [2, {
       "ignore": ["react"]
     }],
-    "import/no-named-as-default": [0]
+    "import/no-named-as-default": [0],
+    "import/no-extraneous-dependencies": [0]
   }
 }

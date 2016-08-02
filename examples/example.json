@@ -1,0 +1,12 @@
+{
+  "string": "string",
+  "number": 42,
+  "boolean": true,
+  "map": {
+    "submap": {
+      "submap_string": "foo",
+      "submap_bool": false
+    }
+  },
+  "array": ["array1", "array2", "array3", "array4"]
+}

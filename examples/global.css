@@ -1,0 +1,12 @@
+body {
+  padding: 20px;
+}
+
+#app {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+h1 {
+  margin-bottom: 20px;
+}

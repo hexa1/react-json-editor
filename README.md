@@ -56,6 +56,9 @@ The following additional props may be passed in the `props` argument:
 
 ## Development
 
+#### Examples
+To view the examples, run `npm start` then point your browser to [http://localhost:9009](http://localhost:9009)
+
 #### Building
 `npm run build` will run the js through babel and the scss through node-sass and output into `dist/`.
 
@@ -73,4 +76,3 @@ The `dist` folder should be committed to the repo for now.
   - Remove font awesome dependency
   - Add AMD/UMD module support via webpack
   - Tests
-  - Examples
