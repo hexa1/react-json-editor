@@ -107,10 +107,12 @@ var JSONField = function (_Component) {
   }, {
     key: 'removeElement',
     value: function removeElement() {
+      var isArrayElement = this.props.isArrayElement;
       var removeElement = this.context.jsonEditor.removeElement;
 
       var path = this.getFieldPath();
-      removeElement(path);
+
+      removeElement(path, isArrayElement);
     }
   }, {
     key: 'getFieldPath',
@@ -118,16 +120,8 @@ var JSONField = function (_Component) {
       var _props = this.props;
       var path = _props.path;
       var fieldKey = _props.fieldKey;
-      var isArrayElement = _props.isArrayElement;
 
-      // if we're in an array, path should look like `some.path.to[index]`
-      // see https://lodash.com/docs#set
-
-      if (isArrayElement) {
-        return path.join('.').concat('[' + fieldKey + ']');
-      }
-
-      return path.concat(fieldKey).join('.');
+      return path.concat(fieldKey);
     }
   }, {
     key: 'renderValue',

@@ -26,10 +26,6 @@ var _lodash7 = require('lodash.set');
 
 var _lodash8 = _interopRequireDefault(_lodash7);
 
-var _lodash9 = require('lodash.unset');
-
-var _lodash10 = _interopRequireDefault(_lodash9);
-
 var _Field = require('./Field');
 
 var _Field2 = _interopRequireDefault(_Field);
@@ -156,15 +152,24 @@ var JSONEditor = function (_Component) {
     }
   }, {
     key: 'removeElement',
-    value: function removeElement(path) {
+    value: function removeElement(path, isArrayElement) {
       var json = (0, _lodash4.default)(this.parseJson());
 
+      var beforePath = path.slice(0, path.length - 1);
+      var elementKey = path[path.length - 1];
+      var beforePathValue = (0, _lodash6.default)(json, beforePath);
+
       this.undoStack.push({
-        path: path,
-        value: (0, _lodash6.default)(json, path)
+        path: beforePath,
+        value: (0, _lodash4.default)(beforePathValue)
       });
 
-      (0, _lodash10.default)(json, path);
+      if (isArrayElement) {
+        beforePathValue.splice(elementKey, 1);
+      } else {
+        delete beforePathValue[elementKey];
+      }
+
       this.redoStack = [];
       this.props.onChange(json);
     }

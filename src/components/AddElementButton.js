@@ -13,7 +13,7 @@ export default class AddElementButton extends Component {
       PropTypes.number,
       PropTypes.bool,
     ]),
-    path: PropTypes.string,
+    path: PropTypes.arrayOf(PropTypes.string),
   }
 
   static contextTypes = {

@@ -48,7 +48,6 @@
     "lodash.clonedeep": "^4.4.1",
     "lodash.get": "^4.4.1",
     "lodash.isplainobject": "^4.0.5",
-    "lodash.set": "^4.3.1",
-    "lodash.unset": "^4.5.1"
+    "lodash.set": "^4.3.1"
   }
 }

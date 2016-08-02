@@ -81,21 +81,16 @@ export default class JSONField extends Component {
   }
 
   removeElement() {
+    const { isArrayElement } = this.props;
     const { removeElement } = this.context.jsonEditor;
     const path = this.getFieldPath();
-    removeElement(path);
+
+    removeElement(path, isArrayElement);
   }
 
   getFieldPath() {
-    const { path, fieldKey, isArrayElement } = this.props;
-
-    // if we're in an array, path should look like `some.path.to[index]`
-    // see https://lodash.com/docs#set
-    if (isArrayElement) {
-      return path.join('.').concat(`[${fieldKey}]`);
-    }
-
-    return path.concat(fieldKey).join('.');
+    const { path, fieldKey } = this.props;
+    return path.concat(fieldKey);
   }
 
   renderValue() {

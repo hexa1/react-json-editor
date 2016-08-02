@@ -3,7 +3,6 @@ import isPlainObject from 'lodash.isplainobject';
 import cloneDeep from 'lodash.clonedeep';
 import get from 'lodash.get';
 import set from 'lodash.set';
-import unset from 'lodash.unset';
 
 import Field from './Field';
 import AddElementButton from './AddElementButton';
@@ -122,15 +121,24 @@ export default class JSONEditor extends Component {
     return true;
   }
 
-  removeElement(path) {
+  removeElement(path, isArrayElement) {
     const json = cloneDeep(this.parseJson());
 
+    const beforePath = path.slice(0, path.length - 1);
+    const elementKey = path[path.length - 1];
+    const beforePathValue = get(json, beforePath);
+
     this.undoStack.push({
-      path,
-      value: get(json, path),
+      path: beforePath,
+      value: cloneDeep(beforePathValue),
     });
 
-    unset(json, path);
+    if (isArrayElement) {
+      beforePathValue.splice(elementKey, 1);
+    } else {
+      delete beforePathValue[elementKey];
+    }
+
     this.redoStack = [];
     this.props.onChange(json);
   }
