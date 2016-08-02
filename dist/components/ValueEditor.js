@@ -7,13 +7,7 @@ exports.default = undefined;
 
 var _react = require('react');
 
-var _reactSelect = require('react-select');
-
-var _reactSelect2 = _interopRequireDefault(_reactSelect);
-
 var _lib = require('../lib');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var boolOptions = [{
   value: 'true', label: 'True'
@@ -21,7 +15,8 @@ var boolOptions = [{
   value: 'false', label: 'False'
 }];
 
-// ReactSelect doesn't like boolean values :-\
+// values in the bool options are strings for ease of use across dropdown components
+// convert the value back to an actual boolean when updating the json value
 function convertToActualBool(string) {
   return string === 'true';
 }
@@ -43,9 +38,10 @@ function validateKeyPress(evt, fieldValue, valueType) {
   }
 }
 
-function ValueEditor(props) {
+function ValueEditor(props, context) {
   var _onChange = props.onChange;
   var fieldValue = props.fieldValue;
+  var createDropdown = context.jsonEditor.createDropdown;
 
   var valueType = (0, _lib.getValueType)(fieldValue);
 
@@ -53,14 +49,10 @@ function ValueEditor(props) {
     return React.createElement(
       'span',
       { className: 'bool-selector' },
-      React.createElement(_reactSelect2.default, {
-        value: String(fieldValue),
-        options: boolOptions,
-        clearable: false,
-        searchable: false,
-        onChange: function onChange(val) {
-          return _onChange(convertToActualBool(val));
-        }
+      createDropdown(boolOptions, String(fieldValue), function (val) {
+        return _onChange(convertToActualBool(val));
+      }, {
+        placeholder: 'Value'
       })
     );
   }
@@ -82,4 +74,8 @@ exports.default = ValueEditor;
 ValueEditor.propTypes = {
   fieldValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.array, _react.PropTypes.object, _react.PropTypes.number, _react.PropTypes.bool]),
   onChange: _react.PropTypes.func
+};
+
+ValueEditor.contextTypes = {
+  jsonEditor: _react.PropTypes.object
 };

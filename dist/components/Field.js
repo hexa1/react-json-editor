@@ -12,10 +12,6 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _reactSelect = require('react-select');
-
-var _reactSelect2 = _interopRequireDefault(_reactSelect);
-
 var _OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
@@ -183,18 +179,14 @@ var JSONField = function (_Component) {
     key: 'renderTypeSelectorAndButtons',
     value: function renderTypeSelectorAndButtons() {
       var fieldValue = this.props.fieldValue;
+      var createDropdown = this.context.jsonEditor.createDropdown;
 
 
       return React.createElement(
         'span',
         null,
-        React.createElement(_reactSelect2.default, {
-          options: typeSelectorOptions,
-          clearable: false,
-          searchable: false,
-          value: (0, _lib.getValueType)(fieldValue),
-          placeholder: 'Type',
-          onChange: this.onTypeChange
+        createDropdown(typeSelectorOptions, (0, _lib.getValueType)(fieldValue), this.onTypeChange, {
+          placeholder: 'Type'
         }),
         fieldValue !== null && React.createElement(
           _OverlayTrigger2.default,

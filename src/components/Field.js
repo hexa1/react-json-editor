@@ -1,6 +1,5 @@
 import { Component, PropTypes } from 'react';
 import cn from 'classnames';
-import ReactSelect from 'react-select';
 import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
 import Tooltip from 'react-bootstrap/lib/Tooltip';
 
@@ -141,17 +140,13 @@ export default class JSONField extends Component {
 
   renderTypeSelectorAndButtons() {
     const { fieldValue } = this.props;
+    const { createDropdown } = this.context.jsonEditor;
 
     return (
       <span>
-        <ReactSelect
-          options={typeSelectorOptions}
-          clearable={false}
-          searchable={false}
-          value={getValueType(fieldValue)}
-          placeholder="Type"
-          onChange={this.onTypeChange}
-        />
+        { createDropdown(typeSelectorOptions, getValueType(fieldValue), this.onTypeChange, {
+          placeholder: 'Type',
+        })}
 
         { fieldValue !== null &&
           <OverlayTrigger overlay={<Tooltip id="nullify">Make null</Tooltip>} placement="left">

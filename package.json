@@ -1,6 +1,6 @@
 {
   "name": "react-json-editor",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A JSON editor for ReactJS",
   "main": "dist/index.js",
   "scripts": {
@@ -30,8 +30,7 @@
   "peerDependencies": {
     "react": "^0.14 || ^15.0.0-rc || ^15.0",
     "react-dom": "^0.14 || ^15.0.0-rc || ^15.0",
-    "react-bootstrap": "^0.29.3",
-    "react-select": "^0.7.0"
+    "react-bootstrap": "^0.29.3"
   },
   "dependencies": {
     "classnames": "^2.2.5",

@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -59,6 +61,7 @@ var JSONEditor = function (_Component) {
     _this.addArrayElement = _this.addArrayElement.bind(_this);
     _this.addMapElement = _this.addMapElement.bind(_this);
     _this.removeElement = _this.removeElement.bind(_this);
+    _this.createDropdown = _this.createDropdown.bind(_this);
     _this.undo = _this.undo.bind(_this);
     _this.redo = _this.redo.bind(_this);
     return _this;
@@ -72,7 +75,8 @@ var JSONEditor = function (_Component) {
           onFieldValueChange: this.onFieldValueChange,
           addArrayElement: this.addArrayElement,
           addMapElement: this.addMapElement,
-          removeElement: this.removeElement
+          removeElement: this.removeElement,
+          createDropdown: this.createDropdown
         }
       };
     }
@@ -165,6 +169,39 @@ var JSONEditor = function (_Component) {
       this.props.onChange(json);
     }
   }, {
+    key: 'createDropdown',
+    value: function createDropdown() {
+      var options = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+      var value = arguments[1];
+      var _onChange = arguments[2];
+      var props = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+      var dropdownFactory = this.props.dropdownFactory;
+
+
+      if (dropdownFactory && typeof dropdownFactory === 'function') {
+        return dropdownFactory(options, value, _onChange, props);
+      }
+
+      return React.createElement(
+        'select',
+        _extends({ value: value, onChange: function onChange(evt) {
+            return _onChange(evt.target.value);
+          }, defaultValue: '' }, props),
+        React.createElement(
+          'option',
+          { disabled: true, value: '' },
+          props.placeholder
+        ),
+        options.map(function (opt, idx) {
+          return React.createElement(
+            'option',
+            { value: opt.value, key: idx },
+            opt.label
+          );
+        })
+      );
+    }
+  }, {
     key: 'undo',
     value: function undo() {
       var lastAction = this.undoStack.pop();
@@ -233,7 +270,8 @@ var JSONEditor = function (_Component) {
 
 JSONEditor.propTypes = {
   json: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.string]),
-  onChange: _react.PropTypes.func
+  onChange: _react.PropTypes.func,
+  dropdownFactory: _react.PropTypes.func
 };
 JSONEditor.defaultProps = {
   onChange: function onChange() {}

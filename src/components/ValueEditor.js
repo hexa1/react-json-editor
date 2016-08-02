@@ -1,5 +1,4 @@
 import { PropTypes } from 'react';
-import ReactSelect from 'react-select';
 
 import { getValueType } from '../lib';
 
@@ -9,7 +8,8 @@ const boolOptions = [{
   value: 'false', label: 'False',
 }];
 
-// ReactSelect doesn't like boolean values :-\
+// values in the bool options are strings for ease of use across dropdown components
+// convert the value back to an actual boolean when updating the json value
 function convertToActualBool(string) {
   return string === 'true';
 }
@@ -31,20 +31,17 @@ function validateKeyPress(evt, fieldValue, valueType) {
   }
 }
 
-export default function ValueEditor(props) {
+export default function ValueEditor(props, context) {
   const { onChange, fieldValue } = props;
+  const { createDropdown } = context.jsonEditor;
   const valueType = getValueType(fieldValue);
 
   if (valueType === 'boolean') {
     return (
       <span className="bool-selector">
-        <ReactSelect
-          value={String(fieldValue)}
-          options={boolOptions}
-          clearable={false}
-          searchable={false}
-          onChange={val => onChange(convertToActualBool(val))}
-        />
+        { createDropdown(boolOptions, String(fieldValue), val => onChange(convertToActualBool(val)), {
+          placeholder: 'Value',
+        })}
       </span>
     );
   }
@@ -69,4 +66,8 @@ ValueEditor.propTypes = {
     PropTypes.bool,
   ]),
   onChange: PropTypes.func,
+};
+
+ValueEditor.contextTypes = {
+  jsonEditor: PropTypes.object,
 };

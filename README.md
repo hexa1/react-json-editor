@@ -5,8 +5,9 @@ You must have these packages installed in your project to use this component:
 
   - `react ^0.14 || ^15.0.0-rc || ^15.0`
   - `react-dom ^0.14 || ^15.0.0-rc || ^15.0`
-  - `react-bootstrap ^0.29.3`
-  - `react-select ^0.7.0`
+  - `react-bootstrap ^0.29.3` (for tooltips and popovers)
+
+The editor also uses some Font Awesome icons so you should have that as well
 
 ## Usage
 ```js
@@ -16,23 +17,51 @@ import JSONEditor from 'react-json-editor';
 <JSONEditor json={{ foo: 'bar' }} onChange={json => console.log(json)} />
 ```
 
-You'll also need to include the css which is located in `dist/jsonEditor.css'.
+You'll also need to include the css which is located in `dist/jsonEditor.css`.
 
-### Props
+#### Custom dropdowns
+The editor uses a dropdown in two places: 1) to select the field type (string, map, bool, etc) and 2) to select the value for a boolean field.
 
-|Prop      | Type             | Default     | Description
-|----------|------------------|-------------|-------------
-|`json`    | object or string | `{}`        | the json object you want to edit. if you pass a string, the editor will attempt to parse it with `JSON.parse()`.
-|`onChange`| function         | `noop`      | called whenever a change occurs. the updated json is passed as the first and only argument to the function.
+You can pass the `dropdownFactory` prop to render your own dropdown:
+
+```js
+<JSONEditor
+  dropdownFactory={(options, value, onChange, props) => (
+    <MyOwnDropdown
+      options={options}
+      value={value}
+      onChange={onChange}
+      {...props}
+    />
+  )}
+/>
+```
+
+`options` will be an array of objects: `[{ label, value }, { label, value }]`. `label` and `value` will always be strings.
+
+`value` will be the currently selected value, always a string to match the `value` in the `options` object.
+
+`onChange` will be a function that should be called when an option is selected. the function takes a single argument with the value of the selected option
+
+The following additional props may be passed in the `props` argument:
+  - `placeholder`: placeholder value that can be displayed if the field has no value
+
+#### Props
+
+|Prop              | Type             | Default     | Description
+|------------------|------------------|-------------|-------------
+|`json`            | object or string | `{}`        | the json object you want to edit. if you pass a string, the editor will attempt to parse it with `JSON.parse()`.
+|`onChange`        | function         | `noop`      | called whenever a change occurs: `function(updatedJson) {}`
+|`dropdownFactory` | function         |             | factory to render a custom dropdown element for selecting the field type and value if type is boolean: `function(options = [], value, props={}) {}`
 
 ## Development
 
-### Building
+#### Building
 `npm run build` will run the js through babel and the scss through node-sass and output into `dist/`.
 
-The `dist` folder should be committed to the repo.
+The `dist` folder should be committed to the repo for now.
 
-### Linting
+#### Linting
 `npm run lint` - please lint before committing any code
 
 ## Known Issues
@@ -40,8 +69,8 @@ The `dist` folder should be committed to the repo.
 
 ## TODO
   - Remove react-bootstrap dependency (used for tooltips/popovers)
-  - Remove react-select dependency (used for dropdown)
-  - Allow passing input & select factories instead of using bootstrap/react-select components
+  - Allow passing an input factory or custom classname instead of using bootstrap components
+  - Remove font awesome dependency
   - Add AMD/UMD module support via webpack
   - Tests
   - Examples

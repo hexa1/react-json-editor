@@ -15,6 +15,7 @@ export default class JSONEditor extends Component {
       PropTypes.string,
     ]),
     onChange: PropTypes.func,
+    dropdownFactory: PropTypes.func,
   }
 
   static defaultProps = {
@@ -35,6 +36,7 @@ export default class JSONEditor extends Component {
     this.addArrayElement = ::this.addArrayElement;
     this.addMapElement = ::this.addMapElement;
     this.removeElement = ::this.removeElement;
+    this.createDropdown = ::this.createDropdown;
     this.undo = ::this.undo;
     this.redo = ::this.redo;
   }
@@ -46,6 +48,7 @@ export default class JSONEditor extends Component {
         addArrayElement: this.addArrayElement,
         addMapElement: this.addMapElement,
         removeElement: this.removeElement,
+        createDropdown: this.createDropdown,
       },
     };
   }
@@ -130,6 +133,23 @@ export default class JSONEditor extends Component {
     unset(json, path);
     this.redoStack = [];
     this.props.onChange(json);
+  }
+
+  createDropdown(options = [], value, onChange, props = {}) {
+    const { dropdownFactory } = this.props;
+
+    if (dropdownFactory && typeof dropdownFactory === 'function') {
+      return dropdownFactory(options, value, onChange, props);
+    }
+
+    return (
+      <select value={value} onChange={evt => onChange(evt.target.value)} defaultValue="" {...props}>
+        <option disabled={true} value="">{ props.placeholder }</option>
+        { options.map((opt, idx) =>
+          <option value={opt.value} key={idx}>{ opt.label }</option>
+        )}
+      </select>
+    );
   }
 
   undo() {
