@@ -1,0 +1,37 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb",
+  "globals": {
+    "React": true
+  },
+  "rules": {
+    "react/jsx-boolean-value": [2, "always"],
+    "react/sort-comp": [0],
+    "react/no-multi-comp": [0],
+    "react/no-did-mount-set-state": [0],
+    "react/jsx-no-duplicate-props": [2],
+    "react/jsx-filename-extension": [0],
+    "no-param-reassign": [0],
+    "no-else-return": [0],
+    "no-unused-vars": [2, {
+      "vars": "all",
+      "args": "none"
+    }],
+    "no-use-before-define": [2, "nofunc"],
+    "indent": [2, 2, {
+      "SwitchCase": 1
+    }],
+    "jsx-quotes": [0],
+    "new-cap": [2, {
+      "capIsNewExceptions": ["Line", "Bar"]
+    }],
+    "consistent-return": [0],
+    "no-dupe-keys": [2],
+    "max-len": [0],
+    "no-return-assign": [0],
+    "import/no-unresolved": [2, {
+      "ignore": ["react"]
+    }],
+    "import/no-named-as-default": [0]
+  }
+}

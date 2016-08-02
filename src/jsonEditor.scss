@@ -1,0 +1,108 @@
+.json-editor {
+  .json-field {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+
+    // make non-expandable field labels line up with expandable field labels
+    // accounts for the expander icon
+    &.non-expandable,
+    .add-element-btn {
+      margin-left: 20px;
+    }
+
+    .indented {
+      padding-left: 20px;
+    }
+
+    .expander-icon {
+      margin-right: 8px;
+      cursor: pointer;
+    }
+
+    .field-key {
+      margin-right: 10px;
+      min-width: 80px;
+      display: inline-block;
+    }
+
+    .form-control {
+      display: inline-block;
+      width: auto;
+      margin-right: 10px;
+    }
+
+    .Select {
+      display: inline-block;
+      width: 120px;
+      vertical-align: middle;
+    }
+
+    .bool-selector {
+      margin-right: 10px;
+    }
+
+    .nullify-btn,
+    .remove-btn {
+      margin-left: 10px;
+      color: #888;
+      cursor: pointer;
+
+      &:hover {
+        color: #555;
+      }
+    }
+
+    .null-value {
+      font-family: monospace;
+      margin-right: 10px;
+    }
+  }
+
+  .add-element-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    button {
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+
+  .editor-actions {
+    margin-top: 10px;
+
+    button {
+      margin-right: 5px;
+
+      i {
+        margin-right: 5px;
+      }
+    }
+  }
+}
+
+// this appears outside the editor dom component in a popup
+#json-editor-new-element-name {
+  input {
+    width: auto !important;
+    display: inline-block !important;
+    margin-right: 10px;
+  }
+
+  .add-new-element,
+  .cancel-new-element {
+    cursor: pointer;
+  }
+
+  .add-new-element {
+    color: #32c5d2;
+    margin-right: 10px;
+  }
+
+  .cancel-new-element,
+  .invalid-element-name {
+    color: #e7505a;
+  }
+}

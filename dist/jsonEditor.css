@@ -1,0 +1,68 @@
+.json-editor .json-field {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #eee; }
+  .json-editor .json-field.non-expandable,
+  .json-editor .json-field .add-element-btn {
+    margin-left: 20px; }
+  .json-editor .json-field .indented {
+    padding-left: 20px; }
+  .json-editor .json-field .expander-icon {
+    margin-right: 8px;
+    cursor: pointer; }
+  .json-editor .json-field .field-key {
+    margin-right: 10px;
+    min-width: 80px;
+    display: inline-block; }
+  .json-editor .json-field .form-control {
+    display: inline-block;
+    width: auto;
+    margin-right: 10px; }
+  .json-editor .json-field .Select {
+    display: inline-block;
+    width: 120px;
+    vertical-align: middle; }
+  .json-editor .json-field .bool-selector {
+    margin-right: 10px; }
+  .json-editor .json-field .nullify-btn,
+  .json-editor .json-field .remove-btn {
+    margin-left: 10px;
+    color: #888;
+    cursor: pointer; }
+    .json-editor .json-field .nullify-btn:hover,
+    .json-editor .json-field .remove-btn:hover {
+      color: #555; }
+  .json-editor .json-field .null-value {
+    font-family: monospace;
+    margin-right: 10px; }
+
+.json-editor .add-element-btn {
+  margin-top: 10px;
+  margin-bottom: 10px; }
+  .json-editor .add-element-btn button i {
+    margin-right: 5px; }
+
+.json-editor .editor-actions {
+  margin-top: 10px; }
+  .json-editor .editor-actions button {
+    margin-right: 5px; }
+    .json-editor .editor-actions button i {
+      margin-right: 5px; }
+
+#json-editor-new-element-name input {
+  width: auto !important;
+  display: inline-block !important;
+  margin-right: 10px; }
+
+#json-editor-new-element-name .add-new-element,
+#json-editor-new-element-name .cancel-new-element {
+  cursor: pointer; }
+
+#json-editor-new-element-name .add-new-element {
+  color: #32c5d2;
+  margin-right: 10px; }
+
+#json-editor-new-element-name .cancel-new-element,
+#json-editor-new-element-name .invalid-element-name {
+  color: #e7505a; }
+
