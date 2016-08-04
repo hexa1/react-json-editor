@@ -26,6 +26,8 @@ var _lodash7 = require('lodash.set');
 
 var _lodash8 = _interopRequireDefault(_lodash7);
 
+var _lib = require('../lib');
+
 var _Field = require('./Field');
 
 var _Field2 = _interopRequireDefault(_Field);
@@ -99,52 +101,57 @@ var JSONEditor = function (_Component) {
   }, {
     key: 'onFieldValueChange',
     value: function onFieldValueChange(path, value) {
-      var json = (0, _lodash4.default)(this.parseJson());
+      var _changeFieldValue = (0, _lib.changeFieldValue)(this.parseJson(), path, value);
+
+      var json = _changeFieldValue.json;
+      var previous = _changeFieldValue.previous;
+
 
       this.undoStack.push({
         path: path,
-        value: (0, _lodash6.default)(json, path)
+        value: previous
       });
 
-      (0, _lodash8.default)(json, path, value);
       this.redoStack = [];
       this.props.onChange(json);
     }
   }, {
     key: 'addArrayElement',
     value: function addArrayElement(path, value) {
-      var json = (0, _lodash4.default)(this.parseJson());
-      var currentVal = (0, _lodash6.default)(json, path);
+      var _addArrayElement2 = (0, _lib.addArrayElement)(this.parseJson(), path, value);
+
+      var json = _addArrayElement2.json;
+      var previous = _addArrayElement2.previous;
+
 
       this.undoStack.push({
         path: path,
-        value: currentVal
+        value: previous
       });
 
-      (0, _lodash8.default)(json, path, currentVal.concat(value));
       this.redoStack = [];
       this.props.onChange(json);
     }
   }, {
     key: 'addMapElement',
     value: function addMapElement(path, name, value) {
-      var json = (0, _lodash4.default)(this.parseJson());
-      var currentVal = (0, _lodash6.default)(json, path) || json;
+      var _addMapElement2 = (0, _lib.addMapElement)(this.parseJson(), path, name, value);
 
-      if (typeof currentVal[name] !== 'undefined') {
+      var json = _addMapElement2.json;
+      var previous = _addMapElement2.previous;
+
+
+      if (!json) {
         return false;
       }
 
-      // quick hack to fix an issue where adding an element to the root level
-      // messes up undo/redo since there's no path
-      if (path) {
+      if (path && path.length) {
         this.undoStack.push({
           path: path,
-          value: (0, _lodash4.default)(currentVal)
+          value: previous
         });
       }
 
-      currentVal[name] = value;
       this.redoStack = [];
       this.props.onChange(json);
 
@@ -153,22 +160,16 @@ var JSONEditor = function (_Component) {
   }, {
     key: 'removeElement',
     value: function removeElement(path, isArrayElement) {
-      var json = (0, _lodash4.default)(this.parseJson());
+      var _removeElement2 = (0, _lib.removeElement)(this.parseJson(), path, isArrayElement);
 
-      var beforePath = path.slice(0, path.length - 1);
-      var elementKey = path[path.length - 1];
-      var beforePathValue = (0, _lodash6.default)(json, beforePath);
+      var json = _removeElement2.json;
+      var previous = _removeElement2.previous;
+
 
       this.undoStack.push({
-        path: beforePath,
-        value: (0, _lodash4.default)(beforePathValue)
+        path: path,
+        value: previous
       });
-
-      if (isArrayElement) {
-        beforePathValue.splice(elementKey, 1);
-      } else {
-        delete beforePathValue[elementKey];
-      }
 
       this.redoStack = [];
       this.props.onChange(json);
@@ -252,7 +253,7 @@ var JSONEditor = function (_Component) {
         React.createElement(
           'div',
           { className: 'editor-actions' },
-          React.createElement(_AddElementButton2.default, { path: '' }),
+          React.createElement(_AddElementButton2.default, { path: [] }),
           this.undoStack.length > 0 && React.createElement(
             'button',
             { className: 'btn default btn-xs', type: 'button', onClick: this.undo },

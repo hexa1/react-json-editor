@@ -71,6 +71,19 @@ var JSONField = function (_Component) {
   }
 
   _createClass(JSONField, [{
+    key: 'shouldComponentUpdate',
+    value: function shouldComponentUpdate(nextProps, nextState) {
+      if (nextState.expanded !== this.state.expanded) {
+        return true;
+      }
+
+      if (JSON.stringify(nextProps.fieldValue) !== JSON.stringify(this.props.fieldValue)) {
+        return true;
+      }
+
+      return false;
+    }
+  }, {
     key: 'toggleExpanded',
     value: function toggleExpanded() {
       this.setState({ expanded: !this.state.expanded });

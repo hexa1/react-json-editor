@@ -55,6 +55,18 @@ export default class JSONField extends Component {
     this.removeElement = ::this.removeElement;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.expanded !== this.state.expanded) {
+      return true;
+    }
+
+    if (JSON.stringify(nextProps.fieldValue) !== JSON.stringify(this.props.fieldValue)) {
+      return true;
+    }
+
+    return false;
+  }
+
   toggleExpanded() {
     this.setState({ expanded: !this.state.expanded });
   }

@@ -67,6 +67,9 @@ The `dist` folder should be committed to the repo for now.
 #### Linting
 `npm run lint` - please lint before committing any code
 
+#### Testing
+`npm test`
+
 ## Known Issues
   - Typing a decimal as the last character in a number field doesn't work because of the way we coerce the type - if the field is a number type, we try to `parseFloat()` it, which parses a value like `1.` to `1`. Adding the decimal anywhere but the last character will work, so a workaround to trying to type `1.1` would be to type `11`, then insert the decimal between the `1`s.
 

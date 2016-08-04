@@ -4,6 +4,8 @@ import cloneDeep from 'lodash.clonedeep';
 import get from 'lodash.get';
 import set from 'lodash.set';
 
+import { changeFieldValue, addArrayElement, addMapElement, removeElement } from '../lib';
+
 import Field from './Field';
 import AddElementButton from './AddElementButton';
 
@@ -71,50 +73,43 @@ export default class JSONEditor extends Component {
   }
 
   onFieldValueChange(path, value) {
-    const json = cloneDeep(this.parseJson());
+    const { json, previous } = changeFieldValue(this.parseJson(), path, value);
 
     this.undoStack.push({
       path,
-      value: get(json, path),
+      value: previous,
     });
 
-    set(json, path, value);
     this.redoStack = [];
     this.props.onChange(json);
   }
 
   addArrayElement(path, value) {
-    const json = cloneDeep(this.parseJson());
-    const currentVal = get(json, path);
+    const { json, previous } = addArrayElement(this.parseJson(), path, value);
 
     this.undoStack.push({
       path,
-      value: currentVal,
+      value: previous,
     });
 
-    set(json, path, currentVal.concat(value));
     this.redoStack = [];
     this.props.onChange(json);
   }
 
   addMapElement(path, name, value) {
-    const json = cloneDeep(this.parseJson());
-    const currentVal = get(json, path) || json;
+    const { json, previous } = addMapElement(this.parseJson(), path, name, value);
 
-    if (typeof currentVal[name] !== 'undefined') {
+    if (!json) {
       return false;
     }
 
-    // quick hack to fix an issue where adding an element to the root level
-    // messes up undo/redo since there's no path
-    if (path) {
+    if (path && path.length) {
       this.undoStack.push({
         path,
-        value: cloneDeep(currentVal),
+        value: previous,
       });
     }
 
-    currentVal[name] = value;
     this.redoStack = [];
     this.props.onChange(json);
 
@@ -122,22 +117,12 @@ export default class JSONEditor extends Component {
   }
 
   removeElement(path, isArrayElement) {
-    const json = cloneDeep(this.parseJson());
-
-    const beforePath = path.slice(0, path.length - 1);
-    const elementKey = path[path.length - 1];
-    const beforePathValue = get(json, beforePath);
+    const { json, previous } = removeElement(this.parseJson(), path, isArrayElement);
 
     this.undoStack.push({
-      path: beforePath,
-      value: cloneDeep(beforePathValue),
+      path,
+      value: previous,
     });
-
-    if (isArrayElement) {
-      beforePathValue.splice(elementKey, 1);
-    } else {
-      delete beforePathValue[elementKey];
-    }
 
     this.redoStack = [];
     this.props.onChange(json);
@@ -200,7 +185,7 @@ export default class JSONEditor extends Component {
         })}
 
         <div className="editor-actions">
-          <AddElementButton path="" />
+          <AddElementButton path={[]} />
 
           { this.undoStack.length > 0 &&
             <button className="btn default btn-xs" type="button" onClick={this.undo}>
