@@ -43,4 +43,9 @@ describe('coerceToType', () => {
   it('returns null if nextType is unknown', () => {
     expect(coerceToType(42, 'foo')).toBe(null);
   });
+
+  it('when coercing a boolean to boolean, returns the same value', () => {
+    expect(coerceToType(true, 'boolean')).toEqual(true);
+    expect(coerceToType(false, 'boolean')).toEqual(false);
+  });
 });
