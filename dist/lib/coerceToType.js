@@ -27,7 +27,7 @@ function coerceToType(value, nextType) {
       return '';
 
     case 'boolean':
-      return true;
+      return typeof value === 'boolean' ? value : true;
 
     case 'map':
       return {};
