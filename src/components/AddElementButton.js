@@ -106,7 +106,7 @@ export default class AddElementButton extends Component {
         rootClose={true}
         onEnter={() => this.setState({ newElementInvalidName: false })}
         onExited={() => this.setState({ newElementName: '' })}
-        ref={ot => this.newElementOverlay = ot}
+        ref={ot => (this.newElementOverlay = ot)}
       >
         { button }
       </OverlayTrigger>
