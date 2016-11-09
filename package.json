@@ -4,10 +4,10 @@
   "description": "A JSON editor for ReactJS",
   "main": "dist/index.js",
   "scripts": {
-    "test": "./node_modules/.bin/karma start",
+    "test": "karma start",
     "test:watch": "karma start --auto-watch --no-single-run",
-    "build": "NODE_ENV=production ./node_modules/.bin/babel ./src -d dist && ./node_modules/.bin/node-sass ./src/jsonEditor.scss > dist/jsonEditor.css",
-    "lint": "./node_modules/.bin/eslint src tests",
+    "build": "rimraf dist && NODE_ENV=production babel src -d dist && node-sass src/jsonEditor.scss > dist/jsonEditor.css",
+    "lint": "eslint src tests",
     "start": "node examples/server.js"
   },
   "author": "Vito LaVilla <vito@vitosamson.com>",
@@ -42,6 +42,7 @@
     "react-bootstrap": "^0.29.3",
     "react-dom": "^0.14.8",
     "react-select": "^1.0.0-beta14",
+    "rimraf": "^2.5.4",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1"
   },
@@ -53,7 +54,6 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "immutable": "^3.8.1",
-    "lodash.clonedeep": "^4.4.1",
     "lodash.isplainobject": "^4.0.5"
   }
 }
