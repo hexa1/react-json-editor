@@ -12,14 +12,6 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
-
-var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
-
-var _Tooltip = require('react-bootstrap/lib/Tooltip');
-
-var _Tooltip2 = _interopRequireDefault(_Tooltip);
-
 var _lib = require('../lib');
 
 var _ValueEditor = require('./ValueEditor');
@@ -120,12 +112,11 @@ var JSONField = function (_Component) {
   }, {
     key: 'removeElement',
     value: function removeElement() {
-      var isArrayElement = this.props.isArrayElement;
       var removeElement = this.context.jsonEditor.removeElement;
 
       var path = this.getFieldPath();
 
-      removeElement(path, isArrayElement);
+      removeElement(path);
     }
   }, {
     key: 'getFieldPath',
@@ -133,8 +124,9 @@ var JSONField = function (_Component) {
       var _props = this.props;
       var path = _props.path;
       var fieldKey = _props.fieldKey;
+      var isArrayElement = _props.isArrayElement;
 
-      return path.concat(fieldKey);
+      return path.concat(isArrayElement ? parseInt(fieldKey, 10) : fieldKey);
     }
   }, {
     key: 'renderValue',
@@ -195,24 +187,27 @@ var JSONField = function (_Component) {
         createDropdown(typeSelectorOptions, (0, _lib.getValueType)(fieldValue), this.onTypeChange, {
           placeholder: 'Type'
         }),
-        fieldValue !== null && React.createElement(
-          _OverlayTrigger2.default,
-          { overlay: React.createElement(
-              _Tooltip2.default,
-              { id: 'nullify' },
-              'Make null'
-            ), placement: 'left' },
-          React.createElement('i', { className: 'fa fa-eraser nullify-btn', onClick: this.nullifyValue })
-        ),
-        React.createElement(
-          _OverlayTrigger2.default,
-          { overlay: React.createElement(
-              _Tooltip2.default,
-              { id: 'remove' },
-              'Remove field'
-            ), placement: 'left' },
-          React.createElement('i', { className: 'fa fa-times remove-btn', onClick: this.removeElement })
-        )
+        this.renderButtons()
+      );
+    }
+  }, {
+    key: 'renderButtons',
+    value: function renderButtons() {
+      var fieldValue = this.props.fieldValue;
+      var createTooltip = this.context.jsonEditor.createTooltip;
+
+
+      var nullifyBtn = React.createElement('i', { className: 'fa fa-eraser nullify-btn', onClick: this.nullifyValue });
+      var nullifyTooltip = createTooltip('Make null', nullifyBtn, 'left', 'nullify');
+
+      var removeBtn = React.createElement('i', { className: 'fa fa-times remove-btn', onClick: this.removeElement });
+      var removeTooltip = createTooltip('Remove field', removeBtn, 'left', 'remove');
+
+      return React.createElement(
+        'span',
+        null,
+        fieldValue !== null && (nullifyTooltip || nullifyBtn),
+        removeTooltip || removeBtn
       );
     }
   }, {
@@ -221,6 +216,7 @@ var JSONField = function (_Component) {
       var _props3 = this.props;
       var fieldKey = _props3.fieldKey;
       var fieldValue = _props3.fieldValue;
+      var isArrayElement = _props3.isArrayElement;
       var expanded = this.state.expanded;
 
       var valueIsPlain = (0, _lib.isPlainValue)(fieldValue);
@@ -234,6 +230,11 @@ var JSONField = function (_Component) {
         'non-expandable': valueIsPlain
       });
 
+      var fieldKeyLabel = fieldKey;
+      if (isArrayElement) {
+        fieldKeyLabel = '[' + fieldKeyLabel + ']';
+      }
+
       return React.createElement(
         'div',
         { className: fieldClassname },
@@ -241,7 +242,7 @@ var JSONField = function (_Component) {
         React.createElement(
           'strong',
           { className: 'field-key' },
-          fieldKey,
+          fieldKeyLabel,
           ': '
         ),
         !valueIsPlain && this.renderTypeSelectorAndButtons(),

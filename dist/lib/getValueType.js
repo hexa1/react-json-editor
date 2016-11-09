@@ -15,7 +15,7 @@ var _lodash2 = _interopRequireDefault(_lodash);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function getValueType(value) {
-  if (value === null) {
+  if (value === null || typeof value === 'undefined') {
     return null;
   }
 

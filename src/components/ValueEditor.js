@@ -11,7 +11,7 @@ const boolOptions = [{
 // values in the bool options are strings for ease of use across dropdown components
 // convert the value back to an actual boolean when updating the json value
 function convertToActualBool(string) {
-  return string === 'true';
+  return string === 'true' || string === true;
 }
 
 function validateKeyPress(evt, fieldValue, valueType) {

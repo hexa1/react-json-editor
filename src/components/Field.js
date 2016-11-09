@@ -1,7 +1,5 @@
 import { Component, PropTypes } from 'react';
 import cn from 'classnames';
-import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
-import Tooltip from 'react-bootstrap/lib/Tooltip';
 
 import { isPlainValue, getValueType, coerceToType } from '../lib';
 import ValueEditor from './ValueEditor';
@@ -93,16 +91,15 @@ export default class JSONField extends Component {
   }
 
   removeElement() {
-    const { isArrayElement } = this.props;
     const { removeElement } = this.context.jsonEditor;
     const path = this.getFieldPath();
 
-    removeElement(path, isArrayElement);
+    removeElement(path);
   }
 
   getFieldPath() {
-    const { path, fieldKey } = this.props;
-    return path.concat(fieldKey);
+    const { path, fieldKey, isArrayElement } = this.props;
+    return path.concat(isArrayElement ? parseInt(fieldKey, 10) : fieldKey);
   }
 
   renderValue() {
@@ -155,21 +152,31 @@ export default class JSONField extends Component {
           placeholder: 'Type',
         })}
 
-        { fieldValue !== null &&
-          <OverlayTrigger overlay={<Tooltip id="nullify">Make null</Tooltip>} placement="left">
-            <i className="fa fa-eraser nullify-btn" onClick={this.nullifyValue} />
-          </OverlayTrigger>
-        }
+        { this.renderButtons() }
+      </span>
+    );
+  }
 
-        <OverlayTrigger overlay={<Tooltip id="remove">Remove field</Tooltip>} placement="left">
-          <i className="fa fa-times remove-btn" onClick={this.removeElement} />
-        </OverlayTrigger>
+  renderButtons() {
+    const { fieldValue } = this.props;
+    const { createTooltip } = this.context.jsonEditor;
+
+    const nullifyBtn = <i className="fa fa-eraser nullify-btn" onClick={this.nullifyValue} />;
+    const nullifyTooltip = createTooltip('Make null', nullifyBtn, 'left', 'nullify');
+
+    const removeBtn = <i className="fa fa-times remove-btn" onClick={this.removeElement} />;
+    const removeTooltip = createTooltip('Remove field', removeBtn, 'left', 'remove');
+
+    return (
+      <span>
+        { fieldValue !== null && (nullifyTooltip || nullifyBtn) }
+        { removeTooltip || removeBtn }
       </span>
     );
   }
 
   render() {
-    const { fieldKey, fieldValue } = this.props;
+    const { fieldKey, fieldValue, isArrayElement } = this.props;
     const { expanded } = this.state;
     const valueIsPlain = isPlainValue(fieldValue);
 
@@ -182,11 +189,16 @@ export default class JSONField extends Component {
       'non-expandable': valueIsPlain,
     });
 
+    let fieldKeyLabel = fieldKey;
+    if (isArrayElement) {
+      fieldKeyLabel = `[${fieldKeyLabel}]`;
+    }
+
     return (
       <div className={fieldClassname}>
         { !valueIsPlain && <i className={expandIconClassname} onClick={this.toggleExpanded} /> }
 
-        <strong className="field-key">{ fieldKey }: </strong>
+        <strong className="field-key">{ fieldKeyLabel }: </strong>
 
         { !valueIsPlain && this.renderTypeSelectorAndButtons() }
         { this.renderValue() }

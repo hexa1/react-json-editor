@@ -160,7 +160,7 @@ var AddElementButton = function (_Component) {
 
 AddElementButton.propTypes = {
   fieldValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.array, _react.PropTypes.object, _react.PropTypes.number, _react.PropTypes.bool]),
-  path: _react.PropTypes.arrayOf(_react.PropTypes.string)
+  path: _react.PropTypes.arrayOf(_react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]))
 };
 AddElementButton.contextTypes = {
   jsonEditor: _react.PropTypes.object

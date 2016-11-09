@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "./node_modules/.bin/karma start",
+    "test:watch": "karma start --auto-watch --no-single-run",
     "build": "NODE_ENV=production ./node_modules/.bin/babel ./src -d dist && ./node_modules/.bin/node-sass ./src/jsonEditor.scss > dist/jsonEditor.css",
     "lint": "./node_modules/.bin/eslint src tests",
     "start": "node examples/server.js"
@@ -51,9 +52,8 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "immutable": "^3.8.1",
     "lodash.clonedeep": "^4.4.1",
-    "lodash.get": "^4.4.1",
-    "lodash.isplainobject": "^4.0.5",
-    "lodash.set": "^4.3.1"
+    "lodash.isplainobject": "^4.0.5"
   }
 }

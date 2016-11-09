@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
-import JSONEditor from 'react-json-editor';
+import JSONEditor from '../../src';
 import exampleJson from '../example.json';
 
 class App extends Component {

@@ -9,6 +9,6 @@ describe('getValueType', () => {
     expect(getValueType(42)).toBe('number');
     expect(getValueType(false)).toBe('boolean');
     expect(getValueType([])).toBe('array');
-    expect(getValueType()).toBe('string');
+    expect(getValueType()).toBe(null);
   });
 });

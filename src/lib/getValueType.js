@@ -1,7 +1,7 @@
 import isPlainObject from 'lodash.isplainobject';
 
 export default function getValueType(value) {
-  if (value === null) {
+  if (value === null || typeof value === 'undefined') {
     return null;
   }
 

@@ -50,9 +50,10 @@ The following additional props may be passed in the `props` argument:
 
 |Prop              | Type             | Default     | Description
 |------------------|------------------|-------------|-------------
-|`json`            | object or string | `{}`        | the json object you want to edit. if you pass a string, the editor will attempt to parse it with `JSON.parse()`.
-|`onChange`        | function         | `noop`      | called whenever a change occurs: `function(updatedJson) {}`
-|`dropdownFactory` | function         |             | factory to render a custom dropdown element for selecting the field type and value if type is boolean: `function(options = [], value, props={}) {}`
+| `json`            | object, array or string | `{}`        | the json object you want to edit. if you pass a string, the editor will attempt to parse it with `JSON.parse()`. |
+| `onChange`        | function         | `noop`      | called whenever a change occurs: `function(updatedJson) {}` |
+| `dropdownFactory` | function         |             | factory to render a custom dropdown element for selecting the field type and value if type is boolean:  `(options: Array<{ value: string, label: string}>, value: string, props: Object) => ReactComponent` |
+| `tooltipFactory` | function | | factory to render a custom tooltip element for the nullify and remove element buttons: `(tooltipText: string, triggerComponent: ReactComponent, placement: string = 'left', id: string) => ReactComponent` |
 
 ## Development
 

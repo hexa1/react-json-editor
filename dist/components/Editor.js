@@ -10,21 +10,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = require('react');
 
-var _lodash = require('lodash.isplainobject');
+var _OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
 
-var _lodash3 = require('lodash.clonedeep');
+var _Tooltip = require('react-bootstrap/lib/Tooltip');
 
-var _lodash4 = _interopRequireDefault(_lodash3);
-
-var _lodash5 = require('lodash.get');
-
-var _lodash6 = _interopRequireDefault(_lodash5);
-
-var _lodash7 = require('lodash.set');
-
-var _lodash8 = _interopRequireDefault(_lodash7);
+var _Tooltip2 = _interopRequireDefault(_Tooltip);
 
 var _lib = require('../lib');
 
@@ -52,14 +44,16 @@ var JSONEditor = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JSONEditor).call(this, props));
 
-    _this.undoStack = [];
-    _this.redoStack = [];
+    _this.state = {
+      editorState: new _lib.EditorState(props.json)
+    };
 
     _this.onFieldValueChange = _this.onFieldValueChange.bind(_this);
     _this.addArrayElement = _this.addArrayElement.bind(_this);
     _this.addMapElement = _this.addMapElement.bind(_this);
     _this.removeElement = _this.removeElement.bind(_this);
     _this.createDropdown = _this.createDropdown.bind(_this);
+    _this.createTooltip = _this.createTooltip.bind(_this);
     _this.undo = _this.undo.bind(_this);
     _this.redo = _this.redo.bind(_this);
     return _this;
@@ -74,105 +68,83 @@ var JSONEditor = function (_Component) {
           addArrayElement: this.addArrayElement,
           addMapElement: this.addMapElement,
           removeElement: this.removeElement,
-          createDropdown: this.createDropdown
+          createDropdown: this.createDropdown,
+          createTooltip: this.createTooltip
         }
       };
     }
   }, {
-    key: 'parseJson',
-    value: function parseJson() {
-      var json = this.props.json;
-
-
-      if (!json) {
-        return {};
-      }
-
-      if ((0, _lodash2.default)(json)) {
-        return json;
-      }
-
-      try {
-        return JSON.parse(json);
-      } catch (e) {
-        return {};
-      }
-    }
-  }, {
     key: 'onFieldValueChange',
     value: function onFieldValueChange(path, value) {
-      var _changeFieldValue = (0, _lib.changeFieldValue)(this.parseJson(), path, value);
+      var _this2 = this;
 
-      var json = _changeFieldValue.json;
-      var previous = _changeFieldValue.previous;
+      var onChange = this.props.onChange;
+      var editorState = this.state.editorState;
 
 
-      this.undoStack.push({
-        path: path,
-        value: previous
+      this.setState({
+        editorState: editorState.setFieldValue(path, value)
+      }, function () {
+        if (onChange) {
+          onChange(_this2.state.editorState.getJson());
+        }
       });
-
-      this.redoStack = [];
-      this.props.onChange(json);
     }
   }, {
     key: 'addArrayElement',
     value: function addArrayElement(path, value) {
-      var _addArrayElement2 = (0, _lib.addArrayElement)(this.parseJson(), path, value);
+      var _this3 = this;
 
-      var json = _addArrayElement2.json;
-      var previous = _addArrayElement2.previous;
+      var onChange = this.props.onChange;
+      var editorState = this.state.editorState;
 
 
-      this.undoStack.push({
-        path: path,
-        value: previous
+      this.setState({
+        editorState: editorState.addArrayElement(path, value)
+      }, function () {
+        if (onChange) {
+          onChange(_this3.state.editorState.getJson());
+        }
       });
-
-      this.redoStack = [];
-      this.props.onChange(json);
     }
   }, {
     key: 'addMapElement',
-    value: function addMapElement(path, name, value) {
-      var _addMapElement2 = (0, _lib.addMapElement)(this.parseJson(), path, name, value);
-
-      var json = _addMapElement2.json;
-      var previous = _addMapElement2.previous;
+    value: function addMapElement(path, key, value) {
+      var onChange = this.props.onChange;
+      var editorState = this.state.editorState;
 
 
-      if (!json) {
-        return false;
+      var updatedState = editorState.addMapElement(path.concat(key), value);
+
+      // addMapElement will return false if the key already exists
+      if (!updatedState) return false;
+
+      this.setState({
+        editorState: updatedState
+      });
+
+      if (onChange) {
+        onChange(updatedState.getJson());
       }
-
-      if (path && path.length) {
-        this.undoStack.push({
-          path: path,
-          value: previous
-        });
-      }
-
-      this.redoStack = [];
-      this.props.onChange(json);
 
       return true;
     }
   }, {
     key: 'removeElement',
-    value: function removeElement(path, isArrayElement) {
-      var _removeElement2 = (0, _lib.removeElement)(this.parseJson(), path, isArrayElement);
+    value: function removeElement(path) {
+      var _this4 = this;
 
-      var json = _removeElement2.json;
-      var previous = _removeElement2.previous;
+      var onChange = this.props.onChange;
+      var editorState = this.state.editorState;
 
 
-      this.undoStack.push({
-        path: path,
-        value: previous
+      this.setState({
+        editorState: editorState.removeElement(path)
+      }, function () {
+        if (onChange) {
+          onChange(_this4.state.editorState.getJson());
+        }
       });
-
-      this.redoStack = [];
-      this.props.onChange(json);
     }
   }, {
     key: 'createDropdown',
@@ -208,37 +180,48 @@ var JSONEditor = function (_Component) {
       );
     }
   }, {
+    key: 'createTooltip',
+    value: function createTooltip(tooltipText, triggerComponent) {
+      var placement = arguments.length <= 2 || arguments[2] === undefined ? 'left' : arguments[2];
+      var id = arguments[3];
+      var tooltipFactory = this.props.tooltipFactory;
+
+
+      if (tooltipFactory) {
+        return tooltipFactory(tooltipText, triggerComponent, placement, id);
+      } else {
+        var tooltip = React.createElement(
+          _Tooltip2.default,
+          { id: id },
+          tooltipText
+        );
+        return React.createElement(
+          _OverlayTrigger2.default,
+          { overlay: tooltip, placement: placement },
+          triggerComponent
+        );
+      }
+    }
+  }, {
     key: 'undo',
     value: function undo() {
-      var lastAction = this.undoStack.pop();
-      var json = (0, _lodash4.default)(this.parseJson());
-
-      this.redoStack.push({
-        path: lastAction.path,
-        value: (0, _lodash6.default)(json, lastAction.path)
+      this.setState({
+        editorState: this.state.editorState.undo()
       });
-
-      (0, _lodash8.default)(json, lastAction.path, lastAction.value);
-      this.props.onChange(json);
     }
   }, {
     key: 'redo',
     value: function redo() {
-      var lastAction = this.redoStack.pop();
-      var json = (0, _lodash4.default)(this.parseJson());
-
-      this.undoStack.push({
-        path: lastAction.path,
-        value: (0, _lodash6.default)(json, lastAction.path)
+      this.setState({
+        editorState: this.state.editorState.redo()
       });
-
-      (0, _lodash8.default)(json, lastAction.path, lastAction.value);
-      this.props.onChange(json);
     }
   }, {
     key: 'render',
     value: function render() {
-      var json = this.parseJson();
+      var editorState = this.state.editorState;
+
+      var json = editorState.getJson();
 
       return React.createElement(
         'div',
@@ -248,19 +231,24 @@ var JSONEditor = function (_Component) {
             return null;
           }
 
-          return React.createElement(_Field2.default, { key: key, fieldKey: key, fieldValue: json[key] });
+          return React.createElement(_Field2.default, {
+            key: key,
+            fieldKey: key,
+            fieldValue: json[key],
+            isArrayElement: (0, _lib.getValueType)(json) === 'array'
+          });
         }),
         React.createElement(
           'div',
           { className: 'editor-actions' },
-          React.createElement(_AddElementButton2.default, { path: [] }),
-          this.undoStack.length > 0 && React.createElement(
+          React.createElement(_AddElementButton2.default, { path: [], fieldValue: json }),
+          editorState.canUndo() && React.createElement(
             'button',
             { className: 'btn default btn-xs', type: 'button', onClick: this.undo },
             React.createElement('i', { className: 'fa fa-undo' }),
             'Undo'
           ),
-          this.redoStack.length > 0 && React.createElement(
+          editorState.canRedo() && React.createElement(
             'button',
             { className: 'btn default btn-xs', type: 'button', onClick: this.redo },
             React.createElement('i', { className: 'fa fa-repeat' }),
@@ -275,9 +263,10 @@ var JSONEditor = function (_Component) {
 }(_react.Component);
 
 JSONEditor.propTypes = {
-  json: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.string]),
+  json: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.string, _react.PropTypes.array]),
   onChange: _react.PropTypes.func,
-  dropdownFactory: _react.PropTypes.func
+  dropdownFactory: _react.PropTypes.func,
+  tooltipFactory: _react.PropTypes.func
 };
 JSONEditor.defaultProps = {
   onChange: function onChange() {}

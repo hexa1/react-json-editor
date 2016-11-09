@@ -19,8 +19,14 @@ module.exports = config => {
       noInfo: true,
     },
 
-    autoWatch: true,
-    singleRun: false,
+    autoWatch: false,
+    singleRun: true,
     colors: true,
+
+    client: {
+      mocha: {
+        bail: true,
+      },
+    },
   });
 };

@@ -1,11 +1,8 @@
 import { Component, PropTypes } from 'react';
-import isPlainObject from 'lodash.isplainobject';
-import cloneDeep from 'lodash.clonedeep';
-import get from 'lodash.get';
-import set from 'lodash.set';
+import OverlayTrigger from 'react-bootstrap/lib/OverlayTrigger';
+import Tooltip from 'react-bootstrap/lib/Tooltip';
 
-import { changeFieldValue, addArrayElement, addMapElement, removeElement } from '../lib';
-
+import { EditorState, getValueType } from '../lib';
 import Field from './Field';
 import AddElementButton from './AddElementButton';
 
@@ -14,9 +11,11 @@ export default class JSONEditor extends Component {
     json: PropTypes.oneOfType([
       PropTypes.object,
       PropTypes.string,
+      PropTypes.array,
     ]),
     onChange: PropTypes.func,
     dropdownFactory: PropTypes.func,
+    tooltipFactory: PropTypes.func,
   }
 
   static defaultProps = {
@@ -30,14 +29,16 @@ export default class JSONEditor extends Component {
   constructor(props) {
     super(props);
 
-    this.undoStack = [];
-    this.redoStack = [];
+    this.state = {
+      editorState: new EditorState(props.json),
+    };
 
     this.onFieldValueChange = ::this.onFieldValueChange;
     this.addArrayElement = ::this.addArrayElement;
     this.addMapElement = ::this.addMapElement;
     this.removeElement = ::this.removeElement;
     this.createDropdown = ::this.createDropdown;
+    this.createTooltip = ::this.createTooltip;
     this.undo = ::this.undo;
     this.redo = ::this.redo;
   }
@@ -50,82 +51,68 @@ export default class JSONEditor extends Component {
         addMapElement: this.addMapElement,
         removeElement: this.removeElement,
         createDropdown: this.createDropdown,
+        createTooltip: this.createTooltip,
       },
     };
   }
 
-  parseJson() {
-    const { json } = this.props;
-
-    if (!json) {
-      return {};
-    }
-
-    if (isPlainObject(json)) {
-      return json;
-    }
-
-    try {
-      return JSON.parse(json);
-    } catch (e) {
-      return {};
-    }
-  }
-
   onFieldValueChange(path, value) {
-    const { json, previous } = changeFieldValue(this.parseJson(), path, value);
+    const { onChange } = this.props;
+    const { editorState } = this.state;
 
-    this.undoStack.push({
-      path,
-      value: previous,
+    this.setState({
+      editorState: editorState.setFieldValue(path, value),
+    }, () => {
+      if (onChange) {
+        onChange(this.state.editorState.getJson());
+      }
     });
-
-    this.redoStack = [];
-    this.props.onChange(json);
   }
 
   addArrayElement(path, value) {
-    const { json, previous } = addArrayElement(this.parseJson(), path, value);
+    const { onChange } = this.props;
+    const { editorState } = this.state;
 
-    this.undoStack.push({
-      path,
-      value: previous,
+    this.setState({
+      editorState: editorState.addArrayElement(path, value),
+    }, () => {
+      if (onChange) {
+        onChange(this.state.editorState.getJson());
+      }
     });
-
-    this.redoStack = [];
-    this.props.onChange(json);
   }
 
-  addMapElement(path, name, value) {
-    const { json, previous } = addMapElement(this.parseJson(), path, name, value);
+  addMapElement(path, key, value) {
+    const { onChange } = this.props;
+    const { editorState } = this.state;
 
-    if (!json) {
-      return false;
+    const updatedState = editorState.addMapElement(path.concat(key), value);
+
+    // addMapElement will return false if the key already exists
+    if (!updatedState) return false;
+
+    this.setState({
+      editorState: updatedState,
+    });
+
+    if (onChange) {
+      onChange(updatedState.getJson());
     }
-
-    if (path && path.length) {
-      this.undoStack.push({
-        path,
-        value: previous,
-      });
-    }
-
-    this.redoStack = [];
-    this.props.onChange(json);
 
     return true;
   }
 
-  removeElement(path, isArrayElement) {
-    const { json, previous } = removeElement(this.parseJson(), path, isArrayElement);
+  removeElement(path) {
+    const { onChange } = this.props;
+    const { editorState } = this.state;
 
-    this.undoStack.push({
-      path,
-      value: previous,
+    this.setState({
+      editorState: editorState.removeElement(path),
+    }, () => {
+      if (onChange) {
+        onChange(this.state.editorState.getJson());
+      }
     });
-
-    this.redoStack = [];
-    this.props.onChange(json);
   }
 
   createDropdown(options = [], value, onChange, props = {}) {
@@ -145,34 +132,36 @@ export default class JSONEditor extends Component {
     );
   }
 
+  createTooltip(tooltipText, triggerComponent, placement = 'left', id) {
+    const { tooltipFactory } = this.props;
+
+    if (tooltipFactory) {
+      return tooltipFactory(tooltipText, triggerComponent, placement, id);
+    } else {
+      const tooltip = <Tooltip id={id}>{ tooltipText }</Tooltip>;
+      return (
+        <OverlayTrigger overlay={tooltip} placement={placement}>
+          { triggerComponent }
+        </OverlayTrigger>
+      );
+    }
+  }
+
   undo() {
-    const lastAction = this.undoStack.pop();
-    const json = cloneDeep(this.parseJson());
-
-    this.redoStack.push({
-      path: lastAction.path,
-      value: get(json, lastAction.path),
+    this.setState({
+      editorState: this.state.editorState.undo(),
     });
-
-    set(json, lastAction.path, lastAction.value);
-    this.props.onChange(json);
   }
 
   redo() {
-    const lastAction = this.redoStack.pop();
-    const json = cloneDeep(this.parseJson());
-
-    this.undoStack.push({
-      path: lastAction.path,
-      value: get(json, lastAction.path),
+    this.setState({
+      editorState: this.state.editorState.redo(),
     });
-
-    set(json, lastAction.path, lastAction.value);
-    this.props.onChange(json);
   }
 
   render() {
-    const json = this.parseJson();
+    const { editorState } = this.state;
+    const json = editorState.getJson();
 
     return (
       <div className="json-editor">
@@ -181,20 +170,27 @@ export default class JSONEditor extends Component {
             return null;
           }
 
-          return <Field key={key} fieldKey={key} fieldValue={json[key]} />;
+          return (
+            <Field
+              key={key}
+              fieldKey={key}
+              fieldValue={json[key]}
+              isArrayElement={getValueType(json) === 'array'}
+            />
+          );
         })}
 
         <div className="editor-actions">
-          <AddElementButton path={[]} />
+          <AddElementButton path={[]} fieldValue={json} />
 
-          { this.undoStack.length > 0 &&
+          { editorState.canUndo() &&
             <button className="btn default btn-xs" type="button" onClick={this.undo}>
               <i className="fa fa-undo" />
               Undo
             </button>
           }
 
-          { this.redoStack.length > 0 &&
+          { editorState.canRedo() &&
             <button className="btn default btn-xs" type="button" onClick={this.redo}>
               <i className="fa fa-repeat" />
               Redo
