@@ -1,4 +1,5 @@
-import { Component, PropTypes } from 'react';
+import { Component } from 'react';
+import PropTypes from 'prop-types';
 import cn from 'classnames';
 
 import { isPlainValue, getValueType, coerceToType } from '../lib';
