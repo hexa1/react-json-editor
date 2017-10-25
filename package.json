@@ -1,6 +1,6 @@
 {
   "name": "react-json-editor",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "A JSON editor for ReactJS",
   "main": "dist/index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.7.0",
     "mocha": "^3.0.0",
-    "node-sass": "^3.8.0",
+    "node-sass": "^4.5.3",
     "react": "^0.14.8",
     "react-bootstrap": "^0.29.3",
     "react-dom": "^0.14.8",

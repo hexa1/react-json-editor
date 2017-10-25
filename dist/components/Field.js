@@ -8,6 +8,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = require('react');
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
@@ -48,7 +52,7 @@ var JSONField = function (_Component) {
   function JSONField(props) {
     _classCallCheck(this, JSONField);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JSONField).call(this, props));
+    var _this = _possibleConstructorReturn(this, (JSONField.__proto__ || Object.getPrototypeOf(JSONField)).call(this, props));
 
     _this.state = {
       expanded: true
@@ -121,20 +125,20 @@ var JSONField = function (_Component) {
   }, {
     key: 'getFieldPath',
     value: function getFieldPath() {
-      var _props = this.props;
-      var path = _props.path;
-      var fieldKey = _props.fieldKey;
-      var isArrayElement = _props.isArrayElement;
+      var _props = this.props,
+          path = _props.path,
+          fieldKey = _props.fieldKey,
+          isArrayElement = _props.isArrayElement;
 
       return path.concat(isArrayElement ? parseInt(fieldKey, 10) : fieldKey);
     }
   }, {
     key: 'renderValue',
     value: function renderValue() {
-      var _props2 = this.props;
-      var fieldKey = _props2.fieldKey;
-      var fieldValue = _props2.fieldValue;
-      var path = _props2.path;
+      var _props2 = this.props,
+          fieldKey = _props2.fieldKey,
+          fieldValue = _props2.fieldValue,
+          path = _props2.path;
       var expanded = this.state.expanded;
 
       var isArray = (0, _lib.getValueType)(fieldValue) === 'array';
@@ -213,10 +217,10 @@ var JSONField = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props3 = this.props;
-      var fieldKey = _props3.fieldKey;
-      var fieldValue = _props3.fieldValue;
-      var isArrayElement = _props3.isArrayElement;
+      var _props3 = this.props,
+          fieldKey = _props3.fieldKey,
+          fieldValue = _props3.fieldValue,
+          isArrayElement = _props3.isArrayElement;
       var expanded = this.state.expanded;
 
       var valueIsPlain = (0, _lib.isPlainValue)(fieldValue);
@@ -256,15 +260,15 @@ var JSONField = function (_Component) {
 }(_react.Component);
 
 JSONField.propTypes = {
-  fieldKey: _react.PropTypes.string,
-  fieldValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.array, _react.PropTypes.object, _react.PropTypes.number, _react.PropTypes.bool]),
-  path: _react.PropTypes.arrayOf(_react.PropTypes.string),
-  isArrayElement: _react.PropTypes.bool
+  fieldKey: _propTypes2.default.string,
+  fieldValue: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.array, _propTypes2.default.object, _propTypes2.default.number, _propTypes2.default.bool]),
+  path: _propTypes2.default.arrayOf(_propTypes2.default.string),
+  isArrayElement: _propTypes2.default.bool
 };
 JSONField.defaultProps = {
   path: []
 };
 JSONField.contextTypes = {
-  jsonEditor: _react.PropTypes.object
+  jsonEditor: _propTypes2.default.object
 };
 exports.default = JSONField;

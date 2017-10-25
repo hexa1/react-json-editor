@@ -8,6 +8,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = require('react');
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
@@ -32,7 +36,7 @@ var AddElementButton = function (_Component) {
   function AddElementButton(props) {
     _classCallCheck(this, AddElementButton);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(AddElementButton).call(this, props));
+    var _this = _possibleConstructorReturn(this, (AddElementButton.__proto__ || Object.getPrototypeOf(AddElementButton)).call(this, props));
 
     _this.state = {
       newElementName: '',
@@ -50,13 +54,13 @@ var AddElementButton = function (_Component) {
         e.preventDefault();
       }
 
-      var _props = this.props;
-      var fieldValue = _props.fieldValue;
-      var path = _props.path;
+      var _props = this.props,
+          fieldValue = _props.fieldValue,
+          path = _props.path;
       var newElementName = this.state.newElementName;
-      var _context$jsonEditor = this.context.jsonEditor;
-      var addArrayElement = _context$jsonEditor.addArrayElement;
-      var addMapElement = _context$jsonEditor.addMapElement;
+      var _context$jsonEditor = this.context.jsonEditor,
+          addArrayElement = _context$jsonEditor.addArrayElement,
+          addMapElement = _context$jsonEditor.addMapElement;
 
 
       if ((0, _lib.getValueType)(fieldValue) === 'array') {
@@ -82,9 +86,9 @@ var AddElementButton = function (_Component) {
       var _this2 = this;
 
       var fieldValue = this.props.fieldValue;
-      var _state = this.state;
-      var newElementName = _state.newElementName;
-      var newElementInvalidName = _state.newElementInvalidName;
+      var _state = this.state,
+          newElementName = _state.newElementName,
+          newElementInvalidName = _state.newElementInvalidName;
 
       var isArray = (0, _lib.getValueType)(fieldValue) === 'array';
       var onBtnClick = isArray ? this.addElement.bind(this) : null;
@@ -159,10 +163,10 @@ var AddElementButton = function (_Component) {
 }(_react.Component);
 
 AddElementButton.propTypes = {
-  fieldValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.array, _react.PropTypes.object, _react.PropTypes.number, _react.PropTypes.bool]),
-  path: _react.PropTypes.arrayOf(_react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]))
+  fieldValue: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.array, _propTypes2.default.object, _propTypes2.default.number, _propTypes2.default.bool]),
+  path: _propTypes2.default.arrayOf(_propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.number]))
 };
 AddElementButton.contextTypes = {
-  jsonEditor: _react.PropTypes.object
+  jsonEditor: _propTypes2.default.object
 };
 exports.default = AddElementButton;

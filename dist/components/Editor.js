@@ -10,6 +10,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _react = require('react');
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 var _OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 var _OverlayTrigger2 = _interopRequireDefault(_OverlayTrigger);
@@ -42,7 +46,7 @@ var JSONEditor = function (_Component) {
   function JSONEditor(props) {
     _classCallCheck(this, JSONEditor);
 
-    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(JSONEditor).call(this, props));
+    var _this = _possibleConstructorReturn(this, (JSONEditor.__proto__ || Object.getPrototypeOf(JSONEditor)).call(this, props));
 
     _this.state = {
       editorState: new _lib.EditorState(props.json)
@@ -149,10 +153,10 @@ var JSONEditor = function (_Component) {
   }, {
     key: 'createDropdown',
     value: function createDropdown() {
-      var options = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
       var value = arguments[1];
       var _onChange = arguments[2];
-      var props = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+      var props = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
       var dropdownFactory = this.props.dropdownFactory;
 
 
@@ -182,7 +186,7 @@ var JSONEditor = function (_Component) {
   }, {
     key: 'createTooltip',
     value: function createTooltip(tooltipText, triggerComponent) {
-      var placement = arguments.length <= 2 || arguments[2] === undefined ? 'left' : arguments[2];
+      var placement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'left';
       var id = arguments[3];
       var tooltipFactory = this.props.tooltipFactory;
 
@@ -263,15 +267,15 @@ var JSONEditor = function (_Component) {
 }(_react.Component);
 
 JSONEditor.propTypes = {
-  json: _react.PropTypes.oneOfType([_react.PropTypes.object, _react.PropTypes.string, _react.PropTypes.array]),
-  onChange: _react.PropTypes.func,
-  dropdownFactory: _react.PropTypes.func,
-  tooltipFactory: _react.PropTypes.func
+  json: _propTypes2.default.oneOfType([_propTypes2.default.object, _propTypes2.default.string, _propTypes2.default.array]),
+  onChange: _propTypes2.default.func,
+  dropdownFactory: _propTypes2.default.func,
+  tooltipFactory: _propTypes2.default.func
 };
 JSONEditor.defaultProps = {
   onChange: function onChange() {}
 };
 JSONEditor.childContextTypes = {
-  jsonEditor: _react.PropTypes.object
+  jsonEditor: _propTypes2.default.object
 };
 exports.default = JSONEditor;

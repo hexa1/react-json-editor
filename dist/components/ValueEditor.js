@@ -3,11 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = undefined;
+exports.default = ValueEditor;
 
-var _react = require('react');
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
 
 var _lib = require('../lib');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var boolOptions = [{
   value: 'true', label: 'True'
@@ -39,8 +43,8 @@ function validateKeyPress(evt, fieldValue, valueType) {
 }
 
 function ValueEditor(props, context) {
-  var _onChange = props.onChange;
-  var fieldValue = props.fieldValue;
+  var _onChange = props.onChange,
+      fieldValue = props.fieldValue;
   var createDropdown = context.jsonEditor.createDropdown;
 
   var valueType = (0, _lib.getValueType)(fieldValue);
@@ -70,12 +74,11 @@ function ValueEditor(props, context) {
   });
 }
 
-exports.default = ValueEditor;
 ValueEditor.propTypes = {
-  fieldValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.array, _react.PropTypes.object, _react.PropTypes.number, _react.PropTypes.bool]),
-  onChange: _react.PropTypes.func
+  fieldValue: _propTypes2.default.oneOfType([_propTypes2.default.string, _propTypes2.default.array, _propTypes2.default.object, _propTypes2.default.number, _propTypes2.default.bool]),
+  onChange: _propTypes2.default.func
 };
 
 ValueEditor.contextTypes = {
-  jsonEditor: _react.PropTypes.object
+  jsonEditor: _propTypes2.default.object
 };
